@@ -20,7 +20,7 @@ public static class ConfigureHostExtension
                 
         builder.WebHost.UseSentry(options =>
         {
-            options.Dsn = Environment.GetEnvironmentVariable("HTDC_HOTELBEDS_SENTRY_ENDPOINT");
+            options.Dsn = Environment.GetEnvironmentVariable("HTDC_TEST_CONNECTOR_SENTRY_ENDPOINT");
             options.Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             options.IncludeActivityData = true;
             options.BeforeSend = sentryEvent =>

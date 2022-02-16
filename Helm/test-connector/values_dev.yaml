@@ -1,0 +1,103 @@
+# Default values for test-connector.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: registry.happytravel.com/test-connector
+
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart version.
+  tag: "latest"
+
+imagePullSecrets:
+  - name: travel-registry
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  grpc:
+    port: 5101
+  metrics:
+    port: 60001
+  healthchecks:
+    port: 60000  
+
+ingress:
+  enabled: true
+  annotations:
+     kubernetes.io/ingress.class: nginx
+     kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: otc-dev.happytravel.com
+      paths:
+        - /
+  tls:
+    - secretName: happytravel-tls
+      hosts:
+        - otc-dev.happytravel.com
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+   limits:
+     cpu: 200m
+     memory: 500Mi
+   requests:
+     cpu: 200m
+     memory: 500Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/name
+          operator: In
+          values:
+          - test-connector
+      topologyKey: "kubernetes.io/hostname"
+
+env:
+  ASPNETCORE_URLS: http://*:80
+  ASPNETCORE_ENVIRONMENT: "Development"
+  HTDC_VAULT_ENDPOINT: "https://vault.dev.happytravel.com/v1/"
+  HTDC_TRAVEL_CLICK_SENTRY_ENDPOINT: "https://1c08171040bd49b781ffe392db8e3b9f@sentry1.happytravel.com/64"
+  JAEGER_AGENT_HOST: "localhost"
+  JAEGER_AGENT_PORT: "6831"
+  HTDC_WEBAPI_PORT: "80"
+  HTDC_GRPC_PORT: "5101"
+  HTDC_HEALTH_PORT: "60000"
+  HTDC_METRICS_PORT: "60001"
+  CONSUL_HTTP_ADDR: "https://consul-dev.happytravel.com/"

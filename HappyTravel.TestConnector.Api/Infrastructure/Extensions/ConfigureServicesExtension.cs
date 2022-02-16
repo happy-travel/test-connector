@@ -8,7 +8,11 @@ using HappyTravel.BaseConnector.Api.Services.Availabilities.RoomContractSetAvail
 using HappyTravel.BaseConnector.Api.Services.Availabilities.WideAvailabilities;
 using HappyTravel.BaseConnector.Api.Services.Bookings;
 using HappyTravel.BaseConnector.Api.Services.Locations;
+using HappyTravel.TestConnector.Api.Infrastructure.MongoDb.Extensions;
+using HappyTravel.TestConnector.Api.Infrastructure.MongoDb.Interfaces;
+using HappyTravel.TestConnector.Api.Models.Supplier;
 using HappyTravel.TestConnector.Api.Services.Connector;
+using HappyTravel.TestConnector.Api.Services.Supplier;
 using HappyTravel.VaultClient;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -38,6 +42,7 @@ public static class ConfigureServicesExtension
         vaultClient.Login(EnvironmentVariableHelper.Get("Vault:Token", builder.Configuration), LoginMethods.Token)?.GetAwaiter().GetResult();
 
         builder.Services.AddBaseConnectorServices(builder.Configuration, builder.Environment, vaultClient, Constants.ConnectorName);
+        builder.ConfigureMongoDb(vaultClient);
 
         builder.Services.AddTransient<IWideAvailabilitySearchService, WideAvailabilitySearchService>();
         builder.Services.AddTransient<IAccommodationAvailabilityService, AccommodationAvailabilityService>();
@@ -46,6 +51,8 @@ public static class ConfigureServicesExtension
         builder.Services.AddTransient<IAccommodationService, AccommodationService>();
         builder.Services.AddTransient<ILocationService, LocationService>();
         builder.Services.AddTransient<IDeadlineService, DeadlineService>();
+
+        builder.Services.AddSingleton<IMongoDbStorage<Availability>, AvailabilityStorage>();
 
         builder.Services.AddHealthChecks();
 

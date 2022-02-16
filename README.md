@@ -1,2 +1,2 @@
 # test-connector
-Connector for testing purposes
+Connector for testing purposes.

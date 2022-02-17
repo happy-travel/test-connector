@@ -40,7 +40,7 @@ public class TestConnectorContextFactory : IDesignTimeDbContextFactory<TestConne
     {
         var vaultUrl = Environment.GetEnvironmentVariable(configuration["Vault:Endpoint"])
                        ?? throw new ArgumentException("Could not obtain Vault endpoint environment variables");
-            
+
         using var vaultClient = new VaultClient.VaultClient(new VaultOptions
         {
             BaseUrl = new Uri(vaultUrl, UriKind.Absolute),

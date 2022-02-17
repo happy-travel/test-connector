@@ -54,6 +54,24 @@ trigger:
 
 steps:
 
+- name: Run migrations
+  image: mcr.microsoft.com/dotnet/sdk:6.0-focal
+  environment:
+    GITHUB_TOKEN:
+      from_secret: GITHUB_TOKEN
+    HTDC_VAULT_TOKEN:
+      from_secret: VAULT_DEV_TOKEN
+    HTDC_VAULT_ENDPOINT:
+      from_secret: VAULT_DEV_ENDPOINT
+    CONSUL_HTTP_ADDR:
+      from_secret: CONSUL_DEV_HTTP_ADDR
+    CONSUL_HTTP_TOKEN:
+      from_secret: CONSUL_DEV_HTTP_TOKEN      
+  commands:
+    - cd HappyTravel.Komoro.Data
+    - dotnet tool restore
+    - dotnet ef database update -v
+
 - name: Build docker image & push to repository
   image: plugins/docker
   environment:
@@ -127,6 +145,24 @@ trigger:
     - production
 
 steps:
+
+- name: Run migrations
+  image: mcr.microsoft.com/dotnet/sdk:6.0-focal
+  environment:
+    GITHUB_TOKEN:
+      from_secret: GITHUB_TOKEN
+    HTDC_VAULT_TOKEN:
+      from_secret: VAULT_PROD_TOKEN
+    HTDC_VAULT_ENDPOINT:
+      from_secret: VAULT_PROD_ENDPOINT
+    CONSUL_HTTP_ADDR:
+      from_secret: CONSUL_PROD_HTTP_ADDR
+    CONSUL_HTTP_TOKEN:
+      from_secret: CONSUL_PROD_HTTP_TOKEN      
+  commands:
+    - cd HappyTravel.Komoro.Data
+    - dotnet tool restore
+    - dotnet ef database update
 
 - name: Build docker image & push to repository
   image: plugins/docker

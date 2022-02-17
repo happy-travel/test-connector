@@ -18,4 +18,21 @@
     <ProjectReference Include="..\HappyTravel.TestConnector.Data\HappyTravel.TestConnector.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="HappyTravel.TestConnector.Api.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591</NoWarn>
+    <DocumentationFile>..\HappyTravel.TestConnector.Api\HappyTravel.TestConnector.Api.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+  </PropertyGroup>
+
 </Project>

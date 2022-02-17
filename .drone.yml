@@ -68,7 +68,7 @@ steps:
     CONSUL_HTTP_TOKEN:
       from_secret: CONSUL_DEV_HTTP_TOKEN      
   commands:
-    - cd HappyTravel.Komoro.Data
+    - cd HappyTravel.TestConnector.Data
     - dotnet tool restore
     - dotnet ef database update -v
 
@@ -160,7 +160,7 @@ steps:
     CONSUL_HTTP_TOKEN:
       from_secret: CONSUL_PROD_HTTP_TOKEN      
   commands:
-    - cd HappyTravel.Komoro.Data
+    - cd HappyTravel.TestConnector.Data
     - dotnet tool restore
     - dotnet ef database update
 

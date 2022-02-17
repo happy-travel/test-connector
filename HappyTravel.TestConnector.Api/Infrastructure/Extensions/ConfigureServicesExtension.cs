@@ -12,6 +12,7 @@ using HappyTravel.EdoContracts.Accommodations;
 using HappyTravel.TestConnector.Api.Infrastructure.Options;
 using HappyTravel.TestConnector.Api.Services.Connector;
 using HappyTravel.TestConnector.Api.Services.Supplier;
+using HappyTravel.TestConnector.Data;
 using HappyTravel.VaultClient;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -41,6 +42,7 @@ public static class ConfigureServicesExtension
         vaultClient.Login(EnvironmentVariableHelper.Get("Vault:Token", builder.Configuration), LoginMethods.Token)?.GetAwaiter().GetResult();
 
         builder.Services.AddBaseConnectorServices(builder.Configuration, builder.Environment, vaultClient, Constants.ConnectorName);
+        builder.ConfigureDatabaseOptions(vaultClient);
 
         builder.Services.AddTransient<IWideAvailabilitySearchService, WideAvailabilitySearchService>();
         builder.Services.AddTransient<IAccommodationAvailabilityService, AccommodationAvailabilityService>();
@@ -51,8 +53,11 @@ public static class ConfigureServicesExtension
         builder.Services.AddTransient<IDeadlineService, DeadlineService>();
         builder.Services.AddTransient<ISupplierService, SupplierService>();
         builder.Services.AddTransient<IWideResultStorage, WideResultStorage>();
-
-        builder.Services.AddHealthChecks();
+        
+        var redisEndpoint = EnvironmentVariableHelper.Get("Redis:Endpoint", builder.Configuration);
+        builder.Services.AddHealthChecks()
+            .AddDbContextCheck<TestConnectorContext>()
+            .AddRedis(redisEndpoint);
 
         builder.Services.AddSwaggerGen(options =>
         {

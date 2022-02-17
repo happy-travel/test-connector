@@ -1,0 +1,12 @@
+{
+  "Database": {
+    "ConnectionString": "Server={0};Port={1};Database=test-connector;Userid={2};Password={3};",
+    "Options": "test-connector/connection-string"
+  },
+  "Vault": {
+    "Endpoint": "HTDC_VAULT_ENDPOINT",
+    "Engine": "secrets",
+    "Role": "test-connector",
+    "Token": "HTDC_VAULT_TOKEN"
+  }
+}

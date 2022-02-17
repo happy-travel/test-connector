@@ -96,5 +96,7 @@ public static class ConfigureServicesExtension
         {
             o.Accommodations = JsonConvert.DeserializeObject<List<MultilingualAccommodation>>(json) ?? new(0);
         });
+
+        builder.Services.Configure<Dictionary<string, Models.GenerationOptions>>(builder.Configuration.GetSection("GenerationOptions"));
     }
 }

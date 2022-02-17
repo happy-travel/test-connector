@@ -26,7 +26,7 @@ public class WideAvailabilitySearchService : IWideAvailabilitySearchService
             .Intersect(_accommodationStorage.Accommodations.Select(a => a.SupplierCode))
             .ToList();
 
-        var results = await _supplierService.GetWideAvailabilityResult(availabilityId: availabilityId,
+        var results = _supplierService.GetWideAvailabilityResult(availabilityId: availabilityId,
             accommodationIds: ids,
             checkInDate: request.CheckInDate,
             occupancies: request.Rooms);

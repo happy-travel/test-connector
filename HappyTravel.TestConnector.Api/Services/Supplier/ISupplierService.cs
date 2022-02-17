@@ -4,6 +4,6 @@ namespace HappyTravel.TestConnector.Api.Services.Supplier;
 
 public interface ISupplierService
 {
-    public Task<List<SlimAccommodationAvailability>> GetWideAvailabilityResult(string availabilityId, List<string> accommodationIds, 
+    public List<SlimAccommodationAvailability> GetWideAvailabilityResult(string availabilityId, List<string> accommodationIds, 
         DateTime checkInDate, List<RoomOccupationRequest> occupancies);
 }

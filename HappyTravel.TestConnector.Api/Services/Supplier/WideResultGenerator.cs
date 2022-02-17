@@ -2,9 +2,7 @@
 using HappyTravel.EdoContracts.Accommodations.Enums;
 using HappyTravel.EdoContracts.Accommodations.Internals;
 using HappyTravel.EdoContracts.General;
-using HappyTravel.EdoContracts.General.Enums;
 using HappyTravel.Money.Extensions;
-using HappyTravel.Money.Models;
 using HappyTravel.TestConnector.Api.Models;
 
 namespace HappyTravel.TestConnector.Api.Services.Supplier;

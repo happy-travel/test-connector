@@ -4,10 +4,8 @@
     "HappyTravel.TestConnector.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5008",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Local",
         "HTDC_WEBAPI_PORT": "5008",
         "HTDC_GRPC_PORT": "5009",
         "HTDC_HEALTH_PORT": "60000",

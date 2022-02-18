@@ -14,7 +14,7 @@ public class AccommodationService : IAccommodationService
 
 
     public Task<List<MultilingualAccommodation>> Get(int skip, int top, DateTime? modificationDate, CancellationToken cancellationToken) 
-        => Task.FromResult(_accommodationStorage.Accommodations);
+        => Task.FromResult(_accommodationStorage.Accommodations.Take(top).Skip(skip).ToList());
 
 
     private readonly AccommodationStorage _accommodationStorage;

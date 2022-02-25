@@ -1,4 +1,5 @@
-﻿using HappyTravel.Money.Enums;
+﻿using HappyTravel.EdoContracts.Accommodations.Enums;
+using HappyTravel.Money.Enums;
 
 namespace HappyTravel.TestConnector.Api.Models;
 
@@ -11,4 +12,6 @@ public class GenerationOptions
     public bool IsAdvancePurchaseRate { get; set; }
     public TimeSpan DeadlineOffset { get; set; }
     public double CancellationPercentage { get; set; } 
+    public BoardBasisTypes BoardBasis { get; set; }
+    public BookingStatusCodes BookingStatus { get; set; }
 }

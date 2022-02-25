@@ -1,5 +1,4 @@
 ﻿using HappyTravel.EdoContracts.Accommodations;
-using HappyTravel.EdoContracts.Accommodations.Enums;
 using HappyTravel.EdoContracts.Accommodations.Internals;
 using HappyTravel.EdoContracts.General;
 using HappyTravel.Money.Extensions;
@@ -27,8 +26,8 @@ public static class WideResultGenerator
             var amount = options.StartAmount + i * options.AmountStep;
             var deadlineDate = checkinDate.Add(options.DeadlineOffset);
             var rooms = occupancies
-                .Select(o => new RoomContract(boardBasis: BoardBasisTypes.NotSpecified,
-                    mealPlan: string.Empty,
+                .Select(o => new RoomContract(boardBasis: options.BoardBasis,
+                    mealPlan: options.BoardBasis.ToString(),
                     contractTypeCode: i,
                     isAvailableImmediately: true,
                     isDynamic: false,

@@ -3,18 +3,21 @@ using HappyTravel.BaseConnector.Api.Infrastructure;
 using HappyTravel.BaseConnector.Api.Services.Bookings;
 using HappyTravel.EdoContracts.Accommodations;
 using HappyTravel.EdoContracts.Accommodations.Enums;
+using HappyTravel.TestConnector.Api.Models;
 using HappyTravel.TestConnector.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace HappyTravel.TestConnector.Api.Services.Connector;
 
 public class BookingService : IBookingService
 {
-    public BookingService(TestConnectorContext context, IWideResultStorage resultStorage)
+    public BookingService(TestConnectorContext context, IWideResultStorage resultStorage, IOptionsMonitor<Dictionary<string, GenerationOptions>> optionsStorage)
     {
         _context = context;
         _resultStorage = resultStorage;
+        _optionsStorage = optionsStorage;
     }
 
     
@@ -37,21 +40,26 @@ public class BookingService : IBookingService
 
         async Task<Result<Data.Models.Booking, ProblemDetails>> SaveBooking(Availability availability)
         {
-            var roomContractSet = availability.Results
-                .SelectMany(a => a.RoomContractSets)
+            var slimAccommodation = availability.Results
+                .SingleOrDefault(a => a.RoomContractSets.Any(r => r.Id == bookingRequest.RoomContractSetId));
+            
+            var roomContractSet = slimAccommodation.RoomContractSets
                 .SingleOrDefault(r => r.Id == bookingRequest.RoomContractSetId);
             
             if (roomContractSet.Equals(default))
                 return ProblemDetailsBuilder.CreateFailureResult<Data.Models.Booking>("Cached result not found", BookingFailureCodes.ConnectorValidationFailed);
-                    
+
+            if (!_optionsStorage.CurrentValue.TryGetValue(slimAccommodation.AccommodationId, out var options))
+                return ProblemDetailsBuilder.CreateFailureResult<Data.Models.Booking>("Options not found", BookingFailureCodes.ConnectorValidationFailed);
             
             var booking = new Data.Models.Booking
             {
                 ReferenceCode = bookingRequest.ReferenceCode,
+                AccommodationId = slimAccommodation.AccommodationId,
                 CheckInDate = availability.CheckInDate,
                 CheckOutDate = availability.CheckOutDate,
                 Rooms = bookingRequest.Rooms,
-                Status = BookingStatusCodes.Confirmed
+                Status = options.BookingStatus
             };
 
             _context.Bookings.Add(booking);
@@ -108,4 +116,5 @@ public class BookingService : IBookingService
 
     private readonly TestConnectorContext _context;
     private readonly IWideResultStorage _resultStorage;
+    private readonly IOptionsMonitor<Dictionary<string, Models.GenerationOptions>> _optionsStorage;
 }

@@ -10,8 +10,7 @@ public class GenerationOptions
     public Currencies Currency { get; set; }
     public decimal AmountStep { get; set; }
     public bool IsAdvancePurchaseRate { get; set; }
-    public TimeSpan DeadlineOffset { get; set; }
-    public double CancellationPercentage { get; set; } 
+    public List<CancellationOptions>? CancellationOptions { get; set; }
     public BoardBasisTypes BoardBasis { get; set; }
     public BookingStatusCodes BookingStatus { get; set; }
 }

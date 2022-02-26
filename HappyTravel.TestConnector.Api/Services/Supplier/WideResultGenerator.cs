@@ -24,7 +24,6 @@ public static class WideResultGenerator
         foreach (var i in Enumerable.Range(0, options.AvailabilitiesCount))
         {
             var amount = options.StartAmount + i * options.AmountStep;
-            var deadlineDate = checkinDate.Add(options.DeadlineOffset);
             var rooms = occupancies
                 .Select(o => new RoomContract(boardBasis: options.BoardBasis,
                     mealPlan: options.BoardBasis.ToString(),
@@ -44,10 +43,7 @@ public static class WideResultGenerator
             result.Add(new RoomContractSet(id: Guid.NewGuid(), 
                 rate: new Rate(finalPrice: finalAmount.ToMoneyAmount(options.Currency),
                     gross: finalAmount.ToMoneyAmount(options.Currency)),
-                deadline: new Deadline(deadlineDate, new List<CancellationPolicy>
-                {
-                    new(deadlineDate, options.CancellationPercentage)
-                }),
+                deadline: GenerateDeadline(options.CancellationOptions, checkinDate),
                 rooms: rooms,
                 tags: new List<string>(),
                 isDirectContract: false,
@@ -57,4 +53,21 @@ public static class WideResultGenerator
 
         return result;
     }
+
+
+    private static Deadline GenerateDeadline(List<CancellationOptions>? options, DateTime checkInDate)
+    {
+        if (options is null || !options.Any())
+            return new Deadline(date: null, new List<CancellationPolicy>());
+
+        options = options.OrderByDescending(o => o.DaysBefore).ToList();
+
+        return new Deadline(date: GetDate(options[0], checkInDate), 
+            policies: options.Select(o => new CancellationPolicy(GetDate(o, checkInDate), o.Percentage))
+                .ToList());
+    }
+
+
+    private static DateTime GetDate(CancellationOptions cancellationOption, DateTime checkInDate)
+        => checkInDate.Subtract(TimeSpan.FromDays(cancellationOption.DaysBefore));
 }

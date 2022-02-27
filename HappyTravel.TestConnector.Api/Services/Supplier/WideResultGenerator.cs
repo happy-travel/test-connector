@@ -1,4 +1,5 @@
 ﻿using HappyTravel.EdoContracts.Accommodations;
+using HappyTravel.EdoContracts.Accommodations.Enums;
 using HappyTravel.EdoContracts.Accommodations.Internals;
 using HappyTravel.EdoContracts.General;
 using HappyTravel.Money.Extensions;
@@ -24,6 +25,7 @@ public static class WideResultGenerator
         foreach (var i in Enumerable.Range(0, options.AvailabilitiesCount))
         {
             var amount = options.StartAmount + i * options.AmountStep;
+            var deadline = GenerateDeadline(options.CancellationOptions, checkinDate);
             var rooms = occupancies
                 .Select(o => new RoomContract(boardBasis: options.BoardBasis,
                     mealPlan: options.BoardBasis.ToString(),
@@ -36,14 +38,18 @@ public static class WideResultGenerator
                     rate: new Rate(finalPrice: amount.ToMoneyAmount(options.Currency),
                         gross: amount.ToMoneyAmount(options.Currency)),
                     adultsNumber: o.AdultsNumber,
-                    childrenAges: o.ChildrenAges))
+                    childrenAges: o.ChildrenAges,
+                    type: RoomTypes.NotSpecified,
+                    isExtraBedNeeded: false,
+                    deadline: deadline,
+                    isAdvancePurchaseRate: options.IsAdvancePurchaseRate))
                 .ToList();
             var finalAmount = rooms.Sum(r => r.Rate.FinalPrice.Amount);
             
             result.Add(new RoomContractSet(id: Guid.NewGuid(), 
                 rate: new Rate(finalPrice: finalAmount.ToMoneyAmount(options.Currency),
                     gross: finalAmount.ToMoneyAmount(options.Currency)),
-                deadline: GenerateDeadline(options.CancellationOptions, checkinDate),
+                deadline: deadline,
                 rooms: rooms,
                 tags: new List<string>(),
                 isDirectContract: false,

@@ -110,7 +110,8 @@ public class BookingService : IBookingService
             checkInDate: booking.CheckInDate.DateTime,
             checkOutDate: booking.CheckOutDate.DateTime,
             rooms: booking.Rooms,
-            bookingUpdateMode: BookingUpdateModes.Synchronous);
+            bookingUpdateMode: BookingUpdateModes.Synchronous,
+            specialValues: new(0));
     }
 
 

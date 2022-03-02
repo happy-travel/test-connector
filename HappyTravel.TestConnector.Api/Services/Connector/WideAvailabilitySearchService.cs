@@ -28,7 +28,7 @@ public class WideAvailabilitySearchService : IWideAvailabilitySearchService
 
         var results = _supplierService.GetWideAvailabilityResult(availabilityId: availabilityId,
             accommodationIds: ids,
-            checkInDate: request.CheckInDate,
+            checkInDate: request.CheckInDate.DateTime,
             occupancies: request.Rooms);
 
         var availability = new Availability(availabilityId: availabilityId,

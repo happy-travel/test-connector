@@ -14,7 +14,7 @@ public class LocationService : ILocationService
     }
 
 
-    public Task<List<Location>> Get(DateTime modified, LocationTypes locationType, int skip, int top, CancellationToken cancellationToken)
+    public Task<List<Location>> Get(DateTimeOffset modified, LocationTypes locationType, int skip, int top, CancellationToken cancellationToken)
     {
         var result = locationType switch
         {

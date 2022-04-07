@@ -8,7 +8,6 @@
     <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="6.0.3" />
     <PackageReference Include="HappyTravel.BaseConnector.Api" Version="1.4.2" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.3" />
-    <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HappyTravel.TestConnector.Data\HappyTravel.TestConnector.Data.csproj" />

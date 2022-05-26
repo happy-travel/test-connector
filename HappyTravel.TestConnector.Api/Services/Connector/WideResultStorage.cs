@@ -16,14 +16,14 @@ public class WideResultStorage : IWideResultStorage
     public async Task<Result<Availability>> Get(string availabilityId)
     {
         var key = BuildKey(availabilityId);
-        var result = await _cache.GetAsync<Availability?>(key, _expiration);
+        var result = await _cache.GetAsync<Availability?>(key, Expiration);
         return result ?? Result.Failure<Availability>($"Cached results for {availabilityId} not found");
     }
 
     public async Task Set(string availabilityId, Availability availability)
     {
         var key = BuildKey(availabilityId);
-        await _cache.SetAsync(key, availability, _expiration);
+        await _cache.SetAsync(key, availability, Expiration);
     }
 
 
@@ -31,6 +31,6 @@ public class WideResultStorage : IWideResultStorage
         => _cache.BuildKey(nameof(WideResultStorage), availabilityId);
 
 
-    private readonly TimeSpan _expiration = TimeSpan.FromMinutes(45);
+    public static TimeSpan Expiration = TimeSpan.FromMinutes(45);
     private readonly IDoubleFlow _cache;
 }

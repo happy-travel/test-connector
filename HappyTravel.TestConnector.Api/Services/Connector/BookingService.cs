@@ -52,6 +52,9 @@ public class BookingService : IBookingService
             if (!_optionsStorage.CurrentValue.TryGetValue(slimAccommodation.AccommodationId, out var options))
                 return ProblemDetailsBuilder.CreateFailureResult<Data.Models.Booking>("Options not found", BookingFailureCodes.ConnectorValidationFailed);
             
+            if (options.IsVccRequired && bookingRequest.CreditCard is null)
+                return ProblemDetailsBuilder.CreateFailureResult<Data.Models.Booking>("VCC is required", BookingFailureCodes.ConnectorValidationFailed);
+            
             var booking = new Data.Models.Booking
             {
                 ReferenceCode = bookingRequest.ReferenceCode,
@@ -117,5 +120,5 @@ public class BookingService : IBookingService
 
     private readonly TestConnectorContext _context;
     private readonly IWideResultStorage _resultStorage;
-    private readonly IOptionsMonitor<Dictionary<string, Models.GenerationOptions>> _optionsStorage;
+    private readonly IOptionsMonitor<Dictionary<string, GenerationOptions>> _optionsStorage;
 }

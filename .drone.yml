@@ -66,7 +66,7 @@ steps:
     CONSUL_HTTP_ADDR:
       from_secret: CONSUL_DEV_HTTP_ADDR
     CONSUL_HTTP_TOKEN:
-      from_secret: CONSUL_DEV_HTTP_TOKEN      
+      from_secret: CONSUL_DEV_HTTP_TOKEN
   commands:
     - cd HappyTravel.TestConnector.Data
     - dotnet tool restore
@@ -104,7 +104,7 @@ steps:
   settings:
     mode: upgrade
     chart: ./Helm/test-connector
-    release: test-connector-dev
+    release: test-connector
     values_files: ["Helm/test-connector/values_dev.yaml"]
     namespace: dev
     skip_tls_verify: true
@@ -158,7 +158,7 @@ steps:
     CONSUL_HTTP_ADDR:
       from_secret: CONSUL_PROD_HTTP_ADDR
     CONSUL_HTTP_TOKEN:
-      from_secret: CONSUL_PROD_HTTP_TOKEN      
+      from_secret: CONSUL_PROD_HTTP_TOKEN
   commands:
     - cd HappyTravel.TestConnector.Data
     - dotnet tool restore
@@ -199,7 +199,7 @@ steps:
   settings:
     mode: upgrade
     chart: ./Helm/test-connector
-    release: test-connector-production
+    release: test-connector
     values_files: ["Helm/test-connector/values_prod.yaml"]
     namespace: production
     skip_tls_verify: true

@@ -1,31 +1,28 @@
-# Default values for test-connector.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicaCount: 1
+
+podAnnotations:
+  linkerd.io/inject: enabled
+
+deployment:
+  annotations:
+    sidecar.jaegertracing.io/inject: jaeger-production
+
+jaeger:
+  collector_host: dns:///jaeger-production-collector-headless.observability:14250
 
 image:
   repository: registry.happytravel.com/test-connector
-
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart version.
   tag: "latest"
-
 imagePullSecrets:
   - name: travel-registry
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
+  create: false
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
+  name:
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -46,7 +43,7 @@ service:
   metrics:
     port: 60001
   healthchecks:
-    port: 60000  
+    port: 60000
 
 ingress:
   enabled: true
@@ -56,25 +53,20 @@ ingress:
   hosts:
     - host: tc.happytravel.com
       paths:
-        - /
+        - path: /
+          pathType: ImplementationSpecific
   tls:
     - secretName: happytravel-tls
       hosts:
         - tc.happytravel.com
 
 resources:
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-   limits:
-     cpu: 200m
-     memory: 500Mi
-   requests:
-     cpu: 200m
-     memory: 500Mi
-
-
+  limits:
+    cpu: 200m
+    memory: 250Mi
+  requests:
+    cpu: 200m
+    memory: 250Mi
 
 nodeSelector: {}
 
@@ -90,6 +82,18 @@ affinity:
           values:
           - test-connector
       topologyKey: "kubernetes.io/hostname"
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+metrics:
+  enabled: true
+  podMonitor:
+    enabled: true
 
 env:
   ASPNETCORE_URLS: http://*:80

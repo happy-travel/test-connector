@@ -1,7 +1,8 @@
+{{- $fullName := include "test-connector.fullname" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "test-connector.fullname" . }}
+  name: {{ .Chart.Name }}
   labels:
     {{- include "test-connector.labels" . | nindent 4 }}
 spec:

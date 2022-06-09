@@ -14,14 +14,12 @@ public static class WideResultGenerator
     {
         return new SlimAccommodationAvailability(availabilityId: availabilityId,
             accommodationId: accommodationId,
-            roomContractSets: Generate(checkinDate, occupancies, options));
+            roomContractSets: Generate(checkinDate, occupancies, options).ToList());
     }
 
 
-    private static List<RoomContractSet> Generate(DateTime checkinDate, List<RoomOccupationRequest> occupancies, GenerationOptions options)
+    private static IEnumerable<RoomContractSet> Generate(DateTime checkinDate, List<RoomOccupationRequest> occupancies, GenerationOptions options)
     {
-        var result = new List<RoomContractSet>();
-        
         foreach (var i in Enumerable.Range(0, options.AvailabilitiesCount))
         {
             var amount = options.StartAmount + i * options.AmountStep;
@@ -46,7 +44,7 @@ public static class WideResultGenerator
                 .ToList();
             var finalAmount = rooms.Sum(r => r.Rate.FinalPrice.Amount);
             
-            result.Add(new RoomContractSet(id: Guid.NewGuid(), 
+            yield return new RoomContractSet(id: Guid.NewGuid(), 
                 rate: new Rate(finalPrice: finalAmount.ToMoneyAmount(options.Currency),
                     gross: finalAmount.ToMoneyAmount(options.Currency)),
                 deadline: deadline,
@@ -54,10 +52,8 @@ public static class WideResultGenerator
                 tags: new List<string>(),
                 isDirectContract: false,
                 isAdvancePurchaseRate: options.IsAdvancePurchaseRate,
-                isPackageRate: false));
+                isPackageRate: false);
         }
-
-        return result;
     }
 
 

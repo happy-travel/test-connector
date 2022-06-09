@@ -36,7 +36,7 @@ public class WideAvailabilitySearchService : IWideAvailabilitySearchService
             checkInDate: request.CheckInDate,
             checkOutDate: request.CheckOutDate,
             expiredAfter: DateTimeOffset.UtcNow.Add(WideResultStorage.Expiration), 
-            results: results,
+            results: results.ToList(),
             numberOfProcessedAccommodations: ids.Count);
         
         await _resultStorage.Set(availabilityId, availability);

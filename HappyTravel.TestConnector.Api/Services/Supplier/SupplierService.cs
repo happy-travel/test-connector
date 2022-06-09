@@ -12,24 +12,20 @@ public class SupplierService : ISupplierService
     }
 
     
-    public List<SlimAccommodationAvailability> GetWideAvailabilityResult(string availabilityId, 
+    public IEnumerable<SlimAccommodationAvailability> GetWideAvailabilityResult(string availabilityId, 
         List<string> accommodationIds, DateTime checkInDate, List<RoomOccupationRequest> occupancies)
     {
-        var results = new List<SlimAccommodationAvailability>();
-
         foreach (var accommodationId in accommodationIds)
         {
             if (!_optionsStorage.CurrentValue.TryGetValue(accommodationId, out var options))
                 continue;
 
-            results.Add(WideResultGenerator.Generate(availabilityId: availabilityId, 
+            yield return WideResultGenerator.Generate(availabilityId: availabilityId, 
                 accommodationId: accommodationId, 
                 checkinDate: checkInDate, 
                 occupancies: occupancies,
-                options: options));
+                options: options);
         }
-
-        return results;
     }
 
 

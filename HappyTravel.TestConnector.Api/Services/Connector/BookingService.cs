@@ -54,6 +54,9 @@ public class BookingService : IBookingService
             
             if (options.IsVccRequired && bookingRequest.CreditCard is null)
                 return ProblemDetailsBuilder.CreateFailureResult<Data.Models.Booking>("VCC is required", BookingFailureCodes.ConnectorValidationFailed);
+
+            if (options.BookingFailureCode is not null)
+                return ProblemDetailsBuilder.CreateFailureResult<Data.Models.Booking>("Booking creation failed", options.BookingFailureCode.Value);
             
             var booking = new Data.Models.Booking
             {

@@ -16,4 +16,5 @@ public class GenerationOptions
     public BookingStatusCodes BookingStatus { get; set; }
     public bool IsVccRequired { get; set; }
     public List<CardVendor> SupportedCardVendors { get; set; } = new();
+    public BookingFailureCodes? BookingFailureCode { get; set; }
 }

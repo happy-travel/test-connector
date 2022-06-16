@@ -20,7 +20,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-IdentityModelEventSource.ShowPII = true; 
-
 app.ConfigureBaseConnector(builder.Configuration);
 app.Run();

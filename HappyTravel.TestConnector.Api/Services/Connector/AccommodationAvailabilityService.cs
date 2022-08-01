@@ -1,7 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
+using HappyTravel.BaseConnector.Api.Infrastructure;
 using HappyTravel.BaseConnector.Api.Services.Availabilities.AccommodationAvailabilities;
 using HappyTravel.EdoContracts.Accommodations;
-using HappyTravel.EdoContracts.Accommodations.Internals;
+using HappyTravel.EdoContracts.Accommodations.Enums;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HappyTravel.TestConnector.Api.Services.Connector;
 
@@ -13,18 +15,27 @@ public class AccommodationAvailabilityService : IAccommodationAvailabilityServic
     }
     
     
-    public async Task<Result<AccommodationAvailability>> Get(string availabilityId, string accommodationId, CancellationToken cancellationToken)
+    public Task<Result<AccommodationAvailability, ProblemDetails>> Get(string availabilityId, string accommodationId, CancellationToken cancellationToken)
     {
-        return await _resultStorage.Get(availabilityId)
+        return GetResult()
             .Bind(Convert);
 
 
-        Result<AccommodationAvailability> Convert(Availability availability)
+        async Task<Result<Availability, ProblemDetails>> GetResult()
+        {
+            var (_, isFailure, availability, error) = await _resultStorage.Get(availabilityId);
+            return isFailure
+                ? ProblemDetailsBuilder.CreateFailureResult<Availability>(error, SearchFailureCodes.Unknown)
+                : availability;
+        }
+
+
+        Result<AccommodationAvailability, ProblemDetails> Convert(Availability availability)
         {
             var result = availability.Results.SingleOrDefault(a => a.AccommodationId == accommodationId);
 
             if (result.Equals(default))
-                return Result.Failure<AccommodationAvailability>($"Cached result for {accommodationId} not found");
+                return ProblemDetailsBuilder.CreateFailureResult<AccommodationAvailability>($"Cached result for {accommodationId} not found", SearchFailureCodes.Unknown);
 
             return new AccommodationAvailability(availabilityId: availabilityId,
                 accommodationId: accommodationId,
